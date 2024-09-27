@@ -422,15 +422,15 @@ def main():
 
         # Se dibuja el arbol AVL en la ventana
         draw_tree(arbol.get_root(), SCREEN_WIDTH // 2, 100, 150)
-        output_lines = split_text(order_output, font, SCREEN_WIDTH - 40)
-        for i, line in enumerate(output_lines):
-            output_surface = font.render(line, True, (0, 0, 0))
-            screen.blit(output_surface, (20, SCREEN_HEIGHT - 50 + i * 25))
         find_output_lines = split_text(find_output, font, SCREEN_WIDTH - 40)
         for i, line in enumerate(find_output_lines):
             output_surface = font.render(line, True, (0, 0, 0))
-            screen.blit(output_surface, (20, SCREEN_HEIGHT - 150 + i * 25))
+            screen.blit(output_surface, (20, SCREEN_HEIGHT - 100 + i * 25))
 
+        output_lines = split_text(order_output, font, SCREEN_WIDTH - 40)
+        for i, line in enumerate(output_lines):
+            output_surface = font.render(line, True, (0, 0, 0))
+            screen.blit(output_surface, (20, SCREEN_HEIGHT - 70 + i * 25))
 
 # Se actualiza la ventana de pygame
         pygame.display.flip()

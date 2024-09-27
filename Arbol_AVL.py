@@ -1,4 +1,4 @@
-import pygame
+import pygame # Se importa la libreria pygame
 import sys
 from pygame.locals import *
 
@@ -122,7 +122,10 @@ class AVL:
                     node = temp
                     if node.right:
                         # Si el nodo tiene hijo derecho
-                        node.parent.left = node.right
+                        if node.parent.left == node:
+                            node.parent.left = node.right
+                        else:
+                            node.parent.right = node.right
                         node.right.parent = node.parent
                     else:
                         # Si el nodo no tiene hijo derecho
@@ -248,7 +251,6 @@ class AVL:
 
 
 # Se crea la interfaz grafica con pygame para visualizar el arbol AVL
-
 pygame.init()
 SCREEN_WIDTH = 900
 SCREEN_HEIGHT = 650
@@ -257,14 +259,15 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Árbol AVL")
 
 # Se establecen las propiedades de cada boton y caja de texto
-font = pygame.font.Font(None, 24)  # Tamaño de fuente
-input_box = pygame.Rect(100, 20, 110, 30)
-button_rect_insert = pygame.Rect(230, 20, 80, 30)
-button_rect_remove = pygame.Rect(320, 20, 81, 30)
-button_rect_preorder = pygame.Rect(411, 20, 90, 30)
-button_rect_inorder = pygame.Rect(511, 20, 81, 30)
-button_rect_postorder = pygame.Rect(602, 20, 95, 30)
-button_rect_find = pygame.Rect(707, 20, 80, 30)
+font = pygame.font.SysFont('Arial', 20)
+input_box = pygame.Rect(100, 20, 130, 30)
+button_rect_insert = pygame.Rect(240, 20, 75, 30)
+button_rect_remove = pygame.Rect(325, 20, 80, 30)
+button_rect_preorder = pygame.Rect(415, 20, 80, 30)
+button_rect_inorder = pygame.Rect(505, 20, 70, 30)
+button_rect_postorder = pygame.Rect(585, 20, 90, 30)
+button_rect_find = pygame.Rect(685, 20, 70, 30)
+button_limpiar = pygame.Rect(765, 20, 75, 30)
 input_text = ''
 active = False
 color_active = pygame.Color('dodgerblue2')
@@ -276,7 +279,6 @@ order_output = ""
 find_output = ""
 
 
-# Se crea el metodo para dibujar el arbol AVL
 # Se crea el metodo para dibujar el arbol AVL
 def draw_tree(node, x, y, offset_x):
     if node is not None:
@@ -322,6 +324,15 @@ def split_text(text, font, max_width):
 
     return lines
 
+#metodo para limpiar la pantalla
+def clear_screen():
+    global arbol, order_output, find_output
+    arbol = AVL()
+    order_output = ""
+    find_output = ""
+
+
+
 
 def main():
     #Se definen las variables globales
@@ -366,6 +377,9 @@ def main():
                 if button_rect_postorder.collidepoint(event.pos):
                     order_output = "Recorrido en Postorden: " + ' '.join(map(str, arbol.post_order(arbol.get_root())))
 
+                if button_limpiar.collidepoint(event.pos):
+                    clear_screen()
+
             if event.type == KEYDOWN:
                 if active:
                     if event.key == K_RETURN:
@@ -388,6 +402,7 @@ def main():
         pygame.draw.rect(screen, (128, 128, 255), button_rect_inorder)
         pygame.draw.rect(screen, (128, 128, 255), button_rect_postorder)
         pygame.draw.rect(screen, (128, 128, 255), button_rect_find)
+        pygame.draw.rect(screen, (128, 128, 255), button_limpiar)
 
         insert_text = font.render('Insertar', True, (0, 0, 0))
         remove_text = font.render('Eliminar', True, (0, 0, 0))
@@ -395,6 +410,7 @@ def main():
         inorder_text = font.render('Inorder', True, (0, 0, 0))
         postorder_text = font.render('Postorder', True, (0, 0, 0))
         find_text = font.render('Buscar', True, (0, 0, 0))
+        limpiar_text = font.render('Limpiar', True, (0, 0, 0))
 
         screen.blit(insert_text, (button_rect_insert.x + 10, button_rect_insert.y + 5))
         screen.blit(remove_text, (button_rect_remove.x + 10, button_rect_remove.y + 5))
@@ -402,6 +418,7 @@ def main():
         screen.blit(inorder_text, (button_rect_inorder.x + 10, button_rect_inorder.y + 5))
         screen.blit(postorder_text, (button_rect_postorder.x + 10, button_rect_postorder.y + 5))
         screen.blit(find_text, (button_rect_find.x + 10, button_rect_find.y + 5))
+        screen.blit(limpiar_text, (button_limpiar.x + 10, button_limpiar.y + 5))
 
         # Se dibuja el arbol AVL en la ventana
         draw_tree(arbol.get_root(), SCREEN_WIDTH // 2, 100, 150)
@@ -413,6 +430,7 @@ def main():
         for i, line in enumerate(find_output_lines):
             output_surface = font.render(line, True, (0, 0, 0))
             screen.blit(output_surface, (20, SCREEN_HEIGHT - 150 + i * 25))
+
 
 # Se actualiza la ventana de pygame
         pygame.display.flip()
